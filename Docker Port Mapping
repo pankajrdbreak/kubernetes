@@ -1,0 +1,11 @@
+Docker container is by default accessible from the container itself only.
+But if we want access the container from the host and outside then we have to do port mapping.
+We have to expose the ports at the time of creation of container
+Below is the command to create container
+$ sudo docker run -td --name nginx -p 80:80 nginx:alpine
+
+Now you can access nginx web server from host as well as outside using
+You can access from host using :
+http://localhost:80 also and using below also
+You can access from outside the host using :
+http://ip_address_of_node_running_container:80
