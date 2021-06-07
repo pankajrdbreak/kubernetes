@@ -3,11 +3,15 @@ Here we will see how to run a simple html application using kubernetes.
 
 Prequisites
 1. Running kubernetes cluster- (running on vmware)
-   Host1 :- Hostname/IP : kmaster/172.16.230.138
-   Host2 :- Hostname/IP : knode/172.16.230.137
+
+   VM-1 :- Hostname/IP : kmaster/172.16.230.138
+   
+   VM-2 :- Hostname/IP : knode/172.16.230.137
+   
 3. A Docker image with nginx & html application on Docker Hub so that we can pull that image 
  
 Note: In this example my application and nginx web server both are available in the image pankutech/html-webserver
+
 
 In the below screenshot you can see my kubernetes cluster.
 
@@ -113,7 +117,18 @@ kubernetes       ClusterIP   10.32.0.1     <none>        443/TCP        26h
 
 # Access your Application
 1.To access the application inside the cluster you can go to browser and type
-  http://localhost:32367 or http://knode:32367/ or http://http://172.16.230.137:32367/
+
+  http://localhost:32367 or
+  
+  http://knode:32367/ or
+  
+  http://172.16.230.137:32367/
   
 2.To access the application outside the cluster you can go to browser and type
-  http://knode:32367/ or http://http://172.16.230.137:32367/
+
+  http://knode:32367/ or
+  
+  http://172.16.230.137:32367/
+  
+  
+  # Thanks for reading..
