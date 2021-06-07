@@ -123,6 +123,9 @@ kubernetes       ClusterIP   10.32.0.1     <none>        443/TCP        26h
   http://knode:32367/ or
   
   http://172.16.230.137:32367/
+
+![WhatsApp Image 2021-06-07 at 6 03 13 PM](https://user-images.githubusercontent.com/76647860/121017926-7626d400-c7bb-11eb-893e-e8f2f1ede1b9.jpeg)
+
   
 2.To access the application outside the cluster you can go to browser and type
 
