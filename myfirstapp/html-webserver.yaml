@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: html-webserver
+  labels:
+    app: html-webserver          # arbitrary label on deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:        # labels the replica selector should match
+      app: html-webserver
+  template:
+    metadata:
+      labels:
+        app: html-webserver      # label for replica selector to match
+        version: 1.7.9  # arbitrary label we can match on elsewhere
+    spec:
+      containers:
+      - name: html-webserver-cont
+        image: pankutech/html-webserver
+        ports:
+        - containerPort: 80
