@@ -115,6 +115,12 @@ kubernetes       ClusterIP   10.32.0.1     <none>        443/TCP        26h
 2.Now the service is availble on the port 32367
 
 # Access your Application
+
+Note: 
+
+You can access the container within the clusetr using IP address of the pod but if pod get deleted and re-created then new IP is get assign to that pod.
+
+
 1.To access the application inside the cluster you can go to browser and type
 
   http://localhost:32367 or
