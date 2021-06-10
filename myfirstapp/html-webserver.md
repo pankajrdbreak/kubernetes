@@ -101,7 +101,6 @@ Containers:
       Finished:     Mon, 07 Jun 2021 12:26:54 +0530
 ```
 
-Note: Now the application is only accessible from the container only not even the host machine(here knode) on which the container running.So now to access the application in the cluster and outside the cluster we have to expose the deployment (Deployment-->Pod-->Container-->Application).
 
 # Expose the Deployment using NodePort
 1.Exposing the deployment will create a service for that application. So give below command to expose 
