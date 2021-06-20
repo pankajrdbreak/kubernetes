@@ -7,6 +7,8 @@ Basically if you want to check whether particular services which will be used by
 
 init containers automatically terminated after completing its task.
 
+Here init container works like puller which pulls static content once save it to shared volume and exit.
+
 
 # Example 
 ```console
