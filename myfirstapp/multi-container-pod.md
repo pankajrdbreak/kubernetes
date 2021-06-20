@@ -6,3 +6,32 @@ The multi-container pods are the pods that contain two or more related container
 In multicontainer pods there is content-generator which will create content continously and put it into shared volume and then this volume is accessed by main-container which will display the content.
 
 The container is not get terminated after pulling the content.It will work as a side car for the main container
+
+
+# Example
+Pod with 2 containers one container is getting memory status and saves into shared volume on continous basis and that shared data is used by another container.
+
+```console
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multi-container-demo2
+spec:
+  containers:
+  - name: data-displayer
+    image: nginx:alpine
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: data-dir
+      mountPath: "/usr/share/nginx/html"
+  - name: data-provider
+    image: busybox
+    command: ['sh', '-c', 'while true; do echo $(free -m) >> /datadir/index.html && sleep 5; done']
+    volumeMounts:
+    - name: data-dir
+      mountPath: "/datadir"
+  volumes:
+  - name: data-dir
+    emptyDir: {}
+```
