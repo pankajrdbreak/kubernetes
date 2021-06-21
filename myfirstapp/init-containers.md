@@ -65,6 +65,8 @@ html-webserver-5b459c9556-vf64q   1/1     Running   5          10d   10.200.1.74
 init-demo                         1/1     Running   0          25s   10.200.1.78   knode   <none>           <none>
 multi-container-demo              2/2     Running   2          18h   10.200.1.75   knode   <none>           <none>
 multi-container-demo2             2/2     Running   2          18h   10.200.1.76   knode   <none>           <none>
+
+
 pankaj@kmaster:~/Desktop$ kubectl describe pod init-demo
 Name:         init-demo
 Namespace:    default
@@ -148,5 +150,35 @@ Events:
   Normal  Pulled     28m   kubelet            Container image "nginx:alpine" already present on machine
   Normal  Created    28m   kubelet            Created container nginx
   Normal  Started    28m   kubelet            Started container nginx
+  
+  
+pankaj@kmaster:~/Desktop$ kubectl exec -it init-demo sh
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+Defaulted container "nginx" out of: nginx, install (init)
+/ # curl 10.200.1.78
+
+<!doctype html>
+<html lang="en" data-theme=light>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="preload" as="script" href="//assets-netstorage.groww.in/website-assets/prod/1.6.8/build/client/js/vendor.ce6f2f2d.js">
+<link rel="preload" href=//assets-netstorage.groww.in/website-assets/prod/1.6.8/build/client/fonts/KFOlCnqEu92Fr1MmEU9fBBc4AMP6lQ.709f6f90.woff2 as="font" type="font/woff2" crossorigin>
+<link rel="preload" href=//assets-netstorage.groww.in/website-assets/prod/1.6.8/build/client/fonts/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.ece6673e.woff2 as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="//assets-netstorage.groww.in/website-assets/prod/1.6.8/build/client/css/main.73daa036.css">
+<link rel="stylesheet" href="//assets-netstorage.groww.in/website-assets/prod/1.6.8/build/client/css/HomePage.b689eaf3.css">
+<link rel="manifest" href="/manifest.json?v=1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Groww">
+<meta name="apple-mobile-web-app-title" content="Groww">
+<meta name="theme-color" content="#5500eb">
+<meta name="msapplication-navbutton-color" content="#5500eb">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="msapplication-starturl" content="/">
+<link type="application/opensearchdescription+xml" rel="search" href="/osdd.xml?v=3" />
+<link rel="icon" type="image/png" href="/favicon-32x32-groww.ico" sizes="32x32">
+<title data-react-helmet="true">Groww - Online Demat, Trading and Direct Mutual Fund Investment in India</title>
+
 
 ```
