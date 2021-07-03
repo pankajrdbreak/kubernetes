@@ -200,3 +200,38 @@ nginx-7d76d9cffd-sjqhw   1/1     Running   0          20m
 nginx-7d76d9cffd-wj99c   1/1     Running   0          20m
 ```
 
+# How to remove Taint from Node?
+Taint is basically the restrictions on node e.g by default master node taint is set to "NoSchedule" means this node will not schedule/create any pod on it.You can check it by followinf command
+```console
+pankaj@pankajvare:~$ kubectl describe node kmaster
+```
+In Taints section you will get the "NoSchedule" taint
+Now to remove this taint
+```console
+pankaj@pankajvare:~$ kubectl taint nodes --all node-role.kubernetes.io/master-
+taint "node-role.kubernetes.io/master" not found
+taint "node-role.kubernetes.io/master" not found
+```
+Here i dont have any taint thats why it showing no taint found
+```console
+pankaj@pankajvare:~$ kubectl describe node kmaster
+Name:               kmaster
+Roles:              control-plane,master
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=kmaster
+                    kubernetes.io/os=linux
+                    node-role.kubernetes.io/control-plane=
+                    node-role.kubernetes.io/master=
+                    node.kubernetes.io/exclude-from-external-load-balancers=
+Annotations:        flannel.alpha.coreos.com/backend-data: {"VNI":1,"VtepMAC":"56:35:f9:74:6f:e6"}
+                    flannel.alpha.coreos.com/backend-type: vxlan
+                    flannel.alpha.coreos.com/kube-subnet-manager: true
+                    flannel.alpha.coreos.com/public-ip: 172.16.230.138
+                    kubeadm.alpha.kubernetes.io/cri-socket: /var/run/dockershim.sock
+                    node.alpha.kubernetes.io/ttl: 0
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Sun, 06 Jun 2021 14:59:04 +0530
+Taints:             <none>
+```
