@@ -170,4 +170,19 @@ NAME                     READY   STATUS    RESTARTS   AGE    IP             NODE
 nginx-656df74c4c-vmh9w   1/1     Running   0          105s   10.200.1.142   knode   <none>           <none>
 ```
 Now you can see the page is serving on port 8080 as we mentioned in configmap and not on default port
+![Screenshot from 2021-07-10 17-01-28](https://user-images.githubusercontent.com/76647860/125161574-b5708800-e1a0-11eb-89f4-3c0a5721a756.png)
 
+
+
+You can also exec in the container and check mounted file
+```console
+pankaj@kmaster:~/Desktop$ kubectl exec -it nginx-656df74c4c-vmh9w sh
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+/ # ls
+bin                   docker-entrypoint.sh  lib                   opt                   run                   sys                   var
+dev                   etc                   media                 proc                  sbin                  tmp
+docker-entrypoint.d   home                  mnt                   root                  srv                   usr
+/ # cd /etc/nginx/conf.d/
+/etc/nginx/conf.d # ls
+nginx-connector.conf
+```
