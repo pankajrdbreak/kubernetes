@@ -33,3 +33,8 @@ kubectl create clusterrolebinding cluster-admin-binding --clusterrole cluster-ad
   4. Once done you will see your cluster is active in Rancher
 
   ![Screenshot from 2021-09-28 12-02-40](https://user-images.githubusercontent.com/76647860/135061617-ee0653c8-d994-45a7-a43d-11b8adfae668.png)
+  ![Screenshot from 2021-09-28 12-02-52](https://user-images.githubusercontent.com/76647860/135061882-b2e36e43-35f3-47d6-88bc-93ed6e2067c6.png)
+  ![Screenshot from 2021-09-28 12-03-14](https://user-images.githubusercontent.com/76647860/135061910-59663b4c-dd22-469c-95fc-fb9c587bdf3e.png)
+  ![Screenshot from 2021-09-28 12-03-24](https://user-images.githubusercontent.com/76647860/135061924-4cc89c4e-307a-4a06-a3cd-6b4dfb246ff1.png)
+  ![Screenshot from 2021-09-28 12-06-17](https://user-images.githubusercontent.com/76647860/135061949-1fb15450-7603-4104-8b1d-813cb6793e27.png)
+
