@@ -31,3 +31,5 @@ If you get permission errors creating some of the resources, your user may not h
 kubectl create clusterrolebinding cluster-admin-binding --clusterrole cluster-admin --user <your username from your kubeconfig>
   
   4. Once done you will see your cluster is active in Rancher
+
+  ![Screenshot from 2021-09-28 12-02-40](https://user-images.githubusercontent.com/76647860/135061617-ee0653c8-d994-45a7-a43d-11b8adfae668.png)
