@@ -7,17 +7,17 @@ Setting up rancher is very easy task follow the below steps
 > Run the above command and Rancher will be install and run on ports 80 and 443
 
 2. Log in to Rancher 
-> In browser type http://localhost/ and you will redirect to Rancer login page
-> Here you have to enter password for default user 'admin'
+> In browser type http://localhost/ and you will redirect to Rancer login page.
+> Here you have to enter password for default user 'admin'.
 > You can follow steps give there to get your password or else
-> Give the below command to reset the password
+> Give the below command to reset the password.
 > sudo docker exec -ti 054cb7348655 reset-password
-> 054cb7348655  is Rancher container id
+> 054cb7348655  is Rancher container id.
 
 3. Now you can add your kubernetes cluster to Rancher
-> If you have VM based k8s cluster then go to 'Import Cluster' option
-> Give name to cluster
-> Now you will get some commands to run on k8s master node like below
+> If you have VM based k8s cluster then go to 'Import Cluster' option.
+> Give name to cluster.
+> Now you will get some commands to run on k8s master node like below.
 > Run the kubectl command below on an existing Kubernetes cluster running a supported Kubernetes version to import it into Rancher:
 
 kubectl apply -f https://192.168.36.18/v3/import/z8k8qlg67dggfjzpc26j8lqzphgr64sw95fb6pmr2cbjd4gcrcqp78_c-m-gwcx6855.yaml
