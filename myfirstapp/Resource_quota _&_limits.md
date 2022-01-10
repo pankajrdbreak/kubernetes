@@ -74,3 +74,53 @@ spec:
     pods: "2"
     configmaps: "2"
 ```
+
+Now try this for Deployment-Replica-Pods
+The current limit for pod is 2 means you can create only 2 pods in "pankaj" ns
+```console
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj create deploy nginx --image=nginx:alpine --replicas=1
+deployment.apps/nginx created
+
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj get all 
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/nginx-565785f75c-6j6hn   1/1     Running   0          18s
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx   1/1     1            1           18s
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-565785f75c   1         1         1       18s
+
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj scale deploy nginx --replicas=2
+deployment.apps/nginx scaled
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj get all 
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/nginx-565785f75c-452cz   1/1     Running   0          2s
+pod/nginx-565785f75c-6j6hn   1/1     Running   0          50s
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx   2/2     2            2           50s
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-565785f75c   2         2         2       50s
+
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj scale deploy nginx --replicas=3
+deployment.apps/nginx scaled
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj get all 
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/nginx-565785f75c-452cz   1/1     Running   0          64s
+pod/nginx-565785f75c-6j6hn   1/1     Running   0          112s
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx   2/3     2            2           112s
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-565785f75c   3         2         2       112s
+```
+
+In last output when we scale the replicas to 3 it shows scaled but in actual only 2 pods are running
+
+
+
+Limits :
+Limits are applied to the memory and cpu usage in the namespace
