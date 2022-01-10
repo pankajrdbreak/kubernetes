@@ -17,6 +17,7 @@ Commands :
 ```console
 pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl create ns pankaj
 namespace/pankaj created
+
 pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl get ns
 NAME              STATUS   AGE
 default           Active   160d
@@ -27,23 +28,10 @@ kube-system       Active   160d
 pankaj            Active   39s
 prod              Active   156d
 stag              Active   156d
-pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl create -f 7-quota-count.yaml
-resourcequota/quota-demo1 created
-pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj get resourcequota
-NAME          AGE   REQUEST                      LIMIT
-quota-demo1   19s   configmaps: 1/1, pods: 0/2   
-pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj get cm
-NAME               DATA   AGE
-kube-root-ca.crt   1      3m1s
-pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj describe quota quota-demo1
-Name:       quota-demo1
-Namespace:  pankaj
-Resource    Used  Hard
---------    ----  ----
-configmaps  1     1
-pods        0     2
+
 pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl create -f quota-count.yaml
 resourcequota/quota-demo1 created
+
 pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj describe quota quota-demo1
 Name:       quota-demo1
 Namespace:  pankaj
@@ -51,8 +39,10 @@ Resource    Used  Hard
 --------    ----  ----
 configmaps  1     2
 pods        0     2
+
 pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj create configmap cm1 --from-literal=name=nikhil
 configmap/cm1 created
+
 pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj describe quota quota-demo1
 Name:       quota-demo1
 Namespace:  pankaj
@@ -61,8 +51,16 @@ Resource    Used  Hard
 configmaps  2     2
 pods        0     2
 
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj get cm
+NAME               DATA   AGE
+cm1                1      7m55s
+kube-root-ca.crt   1      13m
 ``` 
-
+Now resouce limit for creating configmap is reached and if you try to create new cm then it will give you following error
+```console
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj create configmap cm2 --from-literal=name=nikhil
+error: failed to create configmap: configmaps "cm2" is forbidden: exceeded quota: quota-demo1, requested: configmaps=1, used: configmaps=2, limited: configmaps=2
+```
 
 Below is ResourceQuota yaml file : quota-count.yaml
 ```console
