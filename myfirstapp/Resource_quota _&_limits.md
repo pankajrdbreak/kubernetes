@@ -124,3 +124,71 @@ In last output when we scale the replicas to 3 it shows scaled but in actual onl
 
 Limits :
 Limits are applied to the memory and cpu usage in the namespace
+
+Lets create a resourcequota with pod memory limit specification of 500Mi. It means you can allocate only 500Mi to a pod and it will not exceed this limit.
+
+Below the yaml file to create resourcequota
+```console
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: quota-demo-mem
+  namespace: pankaj
+spec:
+  hard:
+    limits.memory: "500Mi"
+```
+
+```console
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj create -f quota-mem.yaml
+resourcequota/quota-demo-mem created
+
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj get resourcequota
+NAME             AGE   REQUEST   LIMIT
+quota-demo-mem   11s             limits.memory: 0/500Mi
+```
+
+Now create a pod without specifying memory limits
+```console
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: pankaj
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj create -f pod-quota-mem.yaml
+Error from server (Forbidden): error when creating "7-pod-quota-mem.yaml": pods "nginx" is forbidden: failed quota: quota-demo-mem: must specify limits.memory
+```
+It will give the above error
+
+Now we will cretae pod with memory limits and giving highest limit
+```console
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: pankaj
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    resources:
+      limits:
+        memory: "500Mi"
+        
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj create -f pod-quota-mem.yaml
+pod/nginx created
+
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj get all
+NAME        READY   STATUS              RESTARTS   AGE
+pod/nginx   0/1     ContainerCreating   0          8s
+
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl -n pankaj get all
+NAME        READY   STATUS    RESTARTS   AGE
+pod/nginx   1/1     Running   0          103s
+```
+Now if you try to scale the pods then it will show the same error becuase already a running pod is consuming 500Mi
