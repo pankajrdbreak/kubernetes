@@ -73,3 +73,33 @@ root@kmaster:/home/kmaster# mount -t nfs 192.168.234.18:/srv/nfs/kubedata /mnt
 root@kmaster:/home/kmaster# mount | grep kubedata
 192.168.234.18:/srv/nfs/kubedata on /mnt type nfs4 (rw,relatime,vers=4.2,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.246.128,local_lock=none,addr=192.168.234.18)
 
+```
+Now NFS server & node are ready and you can create PV,PVC and Nginx pod to use it
+
+1. YAML to create PV
+```console
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv1
+  labels:
+    type: local
+spec:
+  storageClassName: sc1
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 192.168.234.18
+    path: "/srv/nfs/kubedata"
+```
+```console
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl create -f pv-nfs.yaml
+persistentvolume/nfs-pv1 created
+
+pankaj@pankajvare:~/Desktop/kubernetes/yamls$ kubectl get pv
+NAME      CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
+nfs-pv1   1Gi        RWX            Retain           Available           sc1                     5s
+```
+
