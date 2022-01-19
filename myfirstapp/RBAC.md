@@ -10,3 +10,59 @@ In this tutorial we will understand how to create Role and provide access to new
 
 ![image](https://user-images.githubusercontent.com/76647860/150099561-83e1e910-643e-4b43-8617-da25ded245d1.png)
 
+
+```console
+pankaj@pankajvare:~$ kubectl create ns infra
+namespace/infra created
+pankaj@pankajvare:~$ kubectl get ns
+NAME              STATUS   AGE
+default           Active   170d
+dev               Active   166d
+infra             Active   2s
+kube-node-lease   Active   170d
+kube-public       Active   170d
+kube-system       Active   170d
+```
+
+```console
+pankaj@pankajvare:~$ openssl genrsa -out pankaj.key 2048
+Generating RSA private key, 2048 bit long modulus (2 primes)
+..............................................................+++++
+...............................................................................+++++
+e is 65537 (0x010001)
+```
+
+```console
+pankaj@pankajvare:~$ openssl req -new -key pankaj.key -out pankaj.csr -subj "/CN=pankaj/O=infra"
+```
+
+```console
+pankaj@pankajvare:~$ sudo scp kmaster@kmaster:/etc/kubernetes/pki/ca.{crt,key} .
+```
+
+```console
+pankaj@pankajvare:~$ openssl x509 -req -in pankaj.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out pankaj.crt -days 365
+Signature ok
+subject=CN = pankaj, O = infra
+Getting CA Private Key
+```
+
+```console
+pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig config set-cluster kubernetes --server https://192.168.246.128:6443 --certificate-authority=ca.crt
+Cluster "kubernetes" set.
+```
+
+```console
+pankaj@pankajvare:~$ cat pankaj.kubeconfig 
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: ca.crt
+    server: https://192.168.246.128:6443
+  name: kubernetes
+contexts: null
+current-context: ""
+kind: Config
+preferences: {}
+users: null
+```
