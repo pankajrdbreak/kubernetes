@@ -68,3 +68,39 @@ kind: Config
 preferences: {}
 users: null
 ```
+7.Add user "pankaj" to this kubeconfig file
+```console
+pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig config set-credentials pankaj --client-certificate /home/pankaj/pankaj.crt --client-key /home/pankaj/pankaj.key 
+User "pankaj" set.
+```
+8.Now set context for user
+Note: you can set any name for context. Here we have named it as "pankaj-kubernetes"
+```console
+pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig config set-context pankaj-kubernetes --cluster kubernetes --namespace infra --user pankaj
+Context "pankaj-kubernetes" created.
+```
+Below is the kubeconfig file after above commands.
+Note: By default current-context is empty "" we put our context name i.e pankaj-kubernetes
+```console
+pankaj@pankajvare:~$ cat pankaj.kubeconfig
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: ca.crt
+    server: https://192.168.246.128:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    namespace: infra
+    user: pankaj
+  name: pankaj-kubernetes
+current-context: pankaj-kubernetes
+kind: Config
+preferences: {}
+users:
+- name: pankaj
+  user:
+    client-certificate: pankaj.crt
+    client-key: pankaj.key
+```
