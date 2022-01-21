@@ -373,3 +373,4 @@ pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig get pods
 NAME                     READY   STATUS    RESTARTS   AGE
 nginx-565785f75c-9fpr5   1/1     Running   0          44m
 ```
+# Thanks for reading....
