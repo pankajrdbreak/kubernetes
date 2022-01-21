@@ -126,6 +126,7 @@ contexts:
 - context: 
     cluster: kubernetes
     user: pankaj
+    namespace: infra
   name: pankaj-kuebrnetes
 current-context: pankaj-kuebrnetes
 kind: Config
@@ -140,4 +141,55 @@ users:
 pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig get pods
 Error from server (Forbidden): pods is forbidden: User "pankaj" cannot list resource "pods" in API group "" in the namespace "default"
 ```
-The error is saying you are able to connect the cluster but you dont have permissions/access to resources yet.
+The error is saying you are able to connect the cluster but you dont have permissions/access to resources yet.So now we will give access to user "pankaj"
+To provide access we have to create Role
+```console
+pankaj@pankajvare:~$ kubectl create role pankaj-infra --verb=get,list --resource=pods --namespace=infra
+role.rbac.authorization.k8s.io/pankaj-infra created
+
+pankaj@pankajvare:~$ kubectl get roles -n infra
+NAME           CREATED AT
+pankaj-infra   2022-01-21T05:36:01Z
+pankaj@pankajvare:~$ kubectl get roles -n infra pankaj-infra -o yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  creationTimestamp: "2022-01-21T05:36:01Z"
+  name: pankaj-infra
+  namespace: infra
+  resourceVersion: "277335"
+  uid: 2cf4a921-7191-4095-ba9f-f7b2ac64226a
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  ```
+Now you can attach this role to user using rolebinding
+```console
+pankaj@pankajvare:~$ kubectl create rolebinding pankaj-infra-rolebinding --role=pankaj-infra --user=pankaj --namespace=infra
+rolebinding.rbac.authorization.k8s.io/pankaj-infra-rolebinding created
+pankaj@pankajvare:~$ kubectl get rolebinding -n infra
+NAME                       ROLE                AGE
+pankaj-infra-rolebinding   Role/pankaj-infra   24s
+pankaj@pankajvare:~$ kubectl get rolebinding -n infra pankaj-infra-rolebinding -o yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  creationTimestamp: "2022-01-21T05:39:09Z"
+  name: pankaj-infra-rolebinding
+  namespace: infra
+  resourceVersion: "277573"
+  uid: 68a139ba-0ff0-4c7e-b61c-29b2c3731abf
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pankaj-infra
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: pankaj
+```
