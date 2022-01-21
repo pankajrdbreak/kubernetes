@@ -142,7 +142,7 @@ pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig get pods
 Error from server (Forbidden): pods is forbidden: User "pankaj" cannot list resource "pods" in API group "" in the namespace "default"
 ```
 The error is saying you are able to connect the cluster but you dont have permissions/access to resources yet.So now we will give access to user "pankaj"
-To provide access we have to create Role
+To provide access we have to create Role. Below we have given get and list access to the pods to the user.
 ```console
 pankaj@pankajvare:~$ kubectl create role pankaj-infra --verb=get,list --resource=pods --namespace=infra
 role.rbac.authorization.k8s.io/pankaj-infra created
@@ -193,3 +193,56 @@ subjects:
   kind: User
   name: pankaj
 ```
+Now if you try to access the pods in inra ns you will get output asn not found because there is no pod in that namespace
+```console
+pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig get pods
+No resources found in infra namespace.
+```
+And if you try to access pods from any other ns then you will get error or if you try to access resource other than pods then also you will get error because for now you only have access to pods and to get and list the pods
+```console
+pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig get pods -n kube-system
+Error from server (Forbidden): pods is forbidden: User "pankaj" cannot list resource "pods" in API group "" in the namespace "kube-system"
+```
+Now if you want to give all permission to user then just edit role and under resource and verbs section put '*'
+```console
+pankaj@pankajvare:~$ kubectl -n infra edit role pankaj-infra
+role.rbac.authorization.k8s.io/pankaj-infra edited
+
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  creationTimestamp: "2022-01-21T05:36:01Z"
+  name: pankaj-infra
+  namespace: infra
+  resourceVersion: "279639"
+  uid: 2cf4a921-7191-4095-ba9f-f7b2ac64226a
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - '*'
+  
+pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig get deploy
+No resources found in infra namespace.
+
+pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig get svc
+No resources found in infra namespace.
+```
+Now you will be able to create delete deploy or service or pod
+```console
+pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig create deploy nginx --image=nginx:alpine 
+deployment.apps/nginx created
+pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig get all
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/nginx-565785f75c-9fpr5   1/1     Running   0          6s
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx   1/1     1            1           7s
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-565785f75c   1         1         1       7s
+```
+
