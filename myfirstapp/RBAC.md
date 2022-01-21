@@ -269,9 +269,107 @@ subjects:
 ```
 #Now i want to add user "ankit" 
 For ankit user we have to follow the same steps like create certificate,key,csr after creating this follow the below stes
+```console
+pankaj@pankajvare:~$ openssl genrsa -out ankit.key 2048
+Generating RSA private key, 2048 bit long modulus (2 primes)
+........................................................................................................+++++
+........................................................................................+++++
+e is 65537 (0x010001)
+pankaj@pankajvare:~$ openssl req -new -key ankit.key -out ankit.csr -subj "/CN=ankit/O=infra"
+pankaj@pankajvare:~$ openssl x509 -req -in ankit.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out ankit.crt -days 365
+Signature ok
+subject=CN = ankit, O = infra
+Getting CA Private Key
 
+pankaj@pankajvare:~$ ls -ltrh | grep ankit
+-rw-------  1 pankaj pankaj 1.7K Jan 21 11:54 ankit.key
+-rw-rw-r--  1 pankaj pankaj  907 Jan 21 11:54 ankit.csr
+-rw-rw-r--  1 pankaj pankaj 1009 Jan 21 11:55 ankit.crt
+```
 1.Set cluster
 ```console
-
+pankaj@pankajvare:~$ kubectl --kubeconfig ankit.kubeconfig config set-cluster kubernetes --server https://192.168.246.128:6443 --certificate-authority=ca.crt
+Cluster "kubernetes" set.
 ```
 2.Set credentials
+```console
+pankaj@pankajvare:~$ kubectl --kubeconfig ankit.kubeconfig config set-credentials ankit --client-certificate /home/pankaj/ankit.crt --client-key /home/pankaj/ankit.key
+User "ankit" set.
+```
+3.Set context
+```console
+pankaj@pankajvare:~$ kubectl --kubeconfig ankit.kubeconfig config set-context ankit-kubernetes --cluster kubernetes --namespace infra --user ankit
+Context "ankit-kubernetes" created.
+```
+Edit the kubeconfig file and add current context
+```console
+pankaj@pankajvare:~$ sudo vim ankit.kubeconfig 
+
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: ca.crt
+    server: https://192.168.246.128:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    namespace: infra
+    user: ankit
+  name: ankit-kubernetes
+current-context: ankit-kubernetes
+kind: Config
+preferences: {}
+users:
+- name: ankit
+  user:
+    client-certificate: ankit.crt
+    client-key: ankit.key
+```
+#All set
+The only issue is for new user we have to create new role and new rolebinding but it is not good way to create it for every new user.So what we will do is that we will add users in group and create rolebinding for group.
+So we will first delete the old rolebinding and create new
+```console
+pankaj@pankajvare:~$ kubectl -n infra get rolebinding
+NAME                       ROLE                AGE
+pankaj-infra-rolebinding   Role/pankaj-infra   66m
+pankaj@pankajvare:~$ kubectl -n infra delete rolebinding pankaj-infra-rolebinding
+rolebinding.rbac.authorization.k8s.io "pankaj-infra-rolebinding" deleted
+pankaj@pankajvare:~$ kubectl -n infra get rolebinding
+No resources found in infra namespace.
+
+pankaj@pankajvare:~$ kubectl create rolebinding infra-rolebinding --role=pankaj-infra --group=infra --namespace infra
+rolebinding.rbac.authorization.k8s.io/infra-rolebinding created
+
+pankaj@pankajvare:~$ kubectl -n infra get rolebinding
+NAME                ROLE                AGE
+infra-rolebinding   Role/pankaj-infra   6s
+
+pankaj@pankajvare:~$ kubectl -n infra get rolebinding infra-rolebinding -o yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  creationTimestamp: "2022-01-21T06:49:44Z"
+  name: infra-rolebinding
+  namespace: infra
+  resourceVersion: "282519"
+  uid: 80752749-ab58-42ac-b167-112732548ffe
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pankaj-infra
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: infra
+```
+Now user ankit can access the same ns with same access permisions
+```console
+pankaj@pankajvare:~$ kubectl --kubeconfig ankit.kubeconfig get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-565785f75c-9fpr5   1/1     Running   0          44m
+
+pankaj@pankajvare:~$ kubectl --kubeconfig pankaj.kubeconfig get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-565785f75c-9fpr5   1/1     Running   0          44m
+```
