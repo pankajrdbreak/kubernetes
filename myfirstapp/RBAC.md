@@ -245,4 +245,33 @@ deployment.apps/nginx   1/1     1            1           7s
 NAME                               DESIRED   CURRENT   READY   AGE
 replicaset.apps/nginx-565785f75c   1         1         1       7s
 ```
+#Now user pankaj has got the access
+But what if you want to add more users and provide same namespace role and rolebinding?
+Typically you can edit rolebinding and add users in subject section of file one by one but it is not the way for that the concept of group is came into picture
+```console
+pankaj@pankajvare:~$ kubectl -n infra get rolebinding pankaj-infra-rolebinding -o yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  creationTimestamp: "2022-01-21T05:39:09Z"
+  name: pankaj-infra-rolebinding
+  namespace: infra
+  resourceVersion: "277573"
+  uid: 68a139ba-0ff0-4c7e-b61c-29b2c3731abf
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pankaj-infra
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: pankaj
+```
+#Now i want to add user "ankit" 
+For ankit user we have to follow the same steps like create certificate,key,csr after creating this follow the below stes
 
+1.Set cluster
+```console
+
+```
+2.Set credentials
